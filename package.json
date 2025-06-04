@@ -1,0 +1,44 @@
+{
+  "name": "rag-sales-chatbot",
+  "version": "1.0.0",
+  "description": "RAG chatbot with fine-grained authorization for sales teams",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "cli": "node src/cli.js",
+    "initialize": "node src/initialize.js",
+    "initialize:pinecone": "node src/initialize-pinecone.js",
+    "dev": "node --watch src/cli.js",
+    "dev:server": "node server.js",
+    "db:reset": "rm -f dev.db && npm run db:push && npm run db:seed",
+    "db:push": "npx prisma db push",
+    "db:generate": "prisma generate",
+    "db:seed": "node prisma/seed.js",
+    "setup": "npm run db:generate && npm run db:push && npm run db:seed && npm run initialize:pinecone"
+  },
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@commander-js/extra-typings": "^12.0.1",
+    "oso-cloud": "^2.4.7",
+    "@prisma/client": "^5.7.1",
+    "@supabase/supabase-js": "^2.38.5",
+    "commander": "^12.1.0",
+    "cors": "^2.8.5",
+    "debug": "^4.3.4",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "openai": "^4.24.1",
+    "prisma": "^5.7.1",
+    "@pinecone-database/pinecone": "^3.0.3",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "supabase": "^1.142.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

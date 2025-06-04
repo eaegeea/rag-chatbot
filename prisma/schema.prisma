@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Organization {
+  id      Int      @id @default(autoincrement())
+  name    String
+  regions Region[]
+  users   User[]
+
+  @@map("organizations")
+}
+
+model Region {
+  id              Int          @id @default(autoincrement())
+  name            String
+  organization_id Int
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  users           User[]
+  clients         Client[]
+
+  @@map("regions")
+}
+
+model User {
+  id              Int          @id @default(autoincrement())
+  email           String       @unique
+  name            String
+  role            String // 'salesperson' or 'salesmanager'
+  region_id       Int
+  organization_id Int
+  region          Region       @relation(fields: [region_id], references: [id])
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  assigned_clients Client[]
+
+  @@map("users")
+}
+
+model Client {
+  id           Int          @id @default(autoincrement())
+  name         String
+  company      String
+  region_id    Int
+  assigned_id  Int // user who is assigned to this client
+  region       Region       @relation(fields: [region_id], references: [id])
+  assigned_user User        @relation(fields: [assigned_id], references: [id])
+  client_notes ClientNote[]
+
+  @@map("clients")
+}
+
+model ClientNote {
+  id        Int     @id @default(autoincrement())
+  client_id Int
+  content   String
+  note_type String // 'call', 'meeting', 'email', 'concern', 'pricing'
+  client    Client  @relation(fields: [client_id], references: [id])
+
+  @@map("client_notes")
+} 
